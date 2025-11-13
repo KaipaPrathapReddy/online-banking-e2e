@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Test Results & Reports
+test-results/
+playwright-report/
+blob-report/
+allure-results/
+allure-report/
+coverage/
+*.xml
+*.trx
+
+# Playwright
+/playwright/.cache/
+/playwright/.auth/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/
+
+# Build outputs
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Misc
+*.bak
+*.backup
+*.old
