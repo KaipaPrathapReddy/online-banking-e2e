@@ -35,7 +35,6 @@ export const test = base.extend<CustomerLoginFixture>({
     await customerLogin.navigateToLogin();
     await customerLogin.loginAsCustomer(customerName);
     await use(customerLogin);
-    await customerLogin.logout();
   }
 });
 

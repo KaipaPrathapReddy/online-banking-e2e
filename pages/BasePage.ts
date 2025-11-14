@@ -9,13 +9,11 @@ export abstract class BasePage {
   readonly page: Page;
   private readonly bankLogo: Locator;
   private readonly homeButton: Locator;
-  private readonly logoutButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.bankLogo = page.getByText('XYZ Bank');
     this.homeButton = page.getByText('Home');
-    this.logoutButton = this.page.getByText('Logout');
   }
 
   /**
@@ -37,10 +35,6 @@ export abstract class BasePage {
  */
   async clickHome(): Promise<void> {
     await UIHelpers.clickElement(this.page, this.homeButton);
-  }
-
-  async logout(): Promise<void> {
-    await UIHelpers.clickElement(this.page, this.logoutButton);
   }
 
   abstract isPageLoaded(): Promise<boolean>;

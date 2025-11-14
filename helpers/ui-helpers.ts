@@ -14,16 +14,24 @@ export class UIHelpers {
         await locator.selectOption(option);
     }
 
+    static async getDropdownOption(locator: Locator, index: number): Promise<Locator> {
+        return locator.locator('option').nth(index);
+    }
+
+    static async getElementText(locator: Locator): Promise<string> {
+        return await locator.textContent()??'';
+    }
+
     /**
    * Get the success message text
    */
     static async waitForAlert(page: Page): Promise<string> {
         return new Promise((resolve) => {
-        page.once('dialog', async (dialog) => {
-            const msg = dialog.message();
-            await dialog.accept();
-            resolve(msg);
+            page.once('dialog', async (dialog) => {
+                const msg = dialog.message();
+                await dialog.accept();
+                resolve(msg);
+            });
         });
-    });
     }
 }

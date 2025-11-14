@@ -22,5 +22,27 @@ export class DataGenerator {
       postCode: faker.location.zipCode()
     };
   }
+
+  /**
+   * Generate random deposit amount
+   * @param min - Minimum amount (default: 10)
+   * @param max - Maximum amount (default: 1000)
+   * @returns Amount as string (rounded to 2 decimal places)
+   */
+  static generateDepositAmount(min: number = 10, max: number = 1000): string {
+    const amount = faker.number.int({ min, max });
+    return amount.toString();
+  }
+
+  /**
+   * Generate multiple random deposit amounts
+   * @param count - Number of amounts to generate
+   * @param min - Minimum amount (default: 10)
+   * @param max - Maximum amount (default: 1000)
+   * @returns Array of amount strings
+   */
+  static generateDepositAmounts(count: number, min: number = 10, max: number = 1000): string[] {
+    return Array.from({ length: count }, () => this.generateDepositAmount(min, max));
+  }
 }
 
