@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { ManagerGlobalFields } from './manager-global-fields';
+import { UIHelpers } from '../../helpers/ui-helpers';
 
 /**
  * Add Customer Page Object Model
@@ -37,13 +38,9 @@ export class AddCustomerPage extends ManagerGlobalFields {
     await this.firstNameInput.fill(customerData.firstName);
     await this.lastNameInput.fill(customerData.lastName);
     await this.postCodeInput.fill(customerData.postCode);
-    let alertMessage='';
-    this.page.on('dialog', async dialog => {
-      alertMessage = dialog.message();
-      await dialog.accept()
-    });
+    const alertMessage= UIHelpers.waitForAlert(this.page);
     await this.createCustomerButton.click();
-    return alertMessage;
+    return await alertMessage;
   }
 }
 

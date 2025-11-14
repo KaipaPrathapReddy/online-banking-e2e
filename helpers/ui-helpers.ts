@@ -17,19 +17,13 @@ export class UIHelpers {
     /**
    * Get the success message text
    */
-    static async handleAlert(page: Page): Promise<string> {
-        let alertMessage: string = '';
-        // const dialog = await page.waitForEvent('dialog');
-        // dialog.message()
-        // await dialog.accept();
-
-
-        // Handle browser alert dialog
-        page.on('dialog', async (dialog) => {
-            alertMessage = dialog.message();
-            console.log('Alert: '+alertMessage)
+    static async waitForAlert(page: Page): Promise<string> {
+        return new Promise((resolve) => {
+        page.once('dialog', async (dialog) => {
+            const msg = dialog.message();
             await dialog.accept();
+            resolve(msg);
         });
-        return alertMessage;
+    });
     }
 }

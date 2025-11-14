@@ -11,8 +11,10 @@ test.describe('Bank Customer Operations', () => {
   test.describe('Customer Make Deposit', () => {
     test.use({ customerName: 'Harry Potter' });
     test('Scenario 1: As a customer, I want to make a deposit', async ({ customerLogin }) => {
-      test.step('Given: Customer is logged in', async () => {
+      await test.step('Given: Customer is logged in', async () => {
         expect(await dashboardPage.isPageLoaded(),'Dashboard page should be loaded').toBeTruthy();
       });
     });
   });
+});
+

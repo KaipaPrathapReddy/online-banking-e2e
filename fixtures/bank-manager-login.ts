@@ -21,7 +21,6 @@ export const test = base.extend<BankMangerLoginFixture>({
     const bankManagerLogin = new LoginPage(page);
     await bankManagerLogin.navigateToLogin();
     await bankManagerLogin.clickBankManagerLogin();
-    console.log('FIXTURE CALLED - Starting login');
     await use(bankManagerLogin);
   }
 });
