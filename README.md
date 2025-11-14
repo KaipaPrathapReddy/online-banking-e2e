@@ -6,16 +6,37 @@ End-to-end test automation framework for the GlobalSQA Banking Project using Pla
 
 ```
 online-banking-e2e-automation/
+├── config/                   # Configuration files
+│   └── env-config.ts        # Environment configuration
+├── fixtures/                 # Playwright fixtures for reusable setup
+│   ├── bank-manager-login.ts # Bank manager login fixture
+│   └── customer-login.ts    # Customer login fixture
+├── flows/                    # Business flow classes (encapsulate complete workflows)
+│   ├── create-customer-flow.ts # Customer creation flow
+│   ├── open-account-flow.ts    # Account opening flow
+│   └── transaction-flow.ts     # Transaction (deposit/withdraw) flow
+├── helpers/                  # Utility classes and helpers
+│   ├── custom-waits.ts      # Custom wait utilities
+│   ├── data-generator.ts    # Test data generation (using Faker)
+│   └── ui-helpers.ts        # Common UI interaction helpers
 ├── pages/                    # Page Object Model classes
 │   ├── BasePage.ts          # Base page class with common functionality
 │   ├── LoginPage.ts         # Login page interactions
-│   ├── AddCustomerPage.ts   # Add Customer form interactions
-│   └── CustomersTablePage.ts # Customers table interactions
-├── utils/                    # Utility classes and helpers
-│   ├── TestDataGenerator.ts # Test data generation utilities
-│   └── TestHelpers.ts       # Common test helper functions
+│   ├── bank-manager/        # Bank manager pages
+│   │   ├── add-customer-page.ts      # Add Customer form
+│   │   ├── customers-page.ts        # Customers table
+│   │   ├── manager-global-fields.ts # Common bank manager navigation
+│   │   └── open-account-page.ts     # Open Account form
+│   └── customer/            # Customer pages
+│       ├── customer-dashboard-page.ts # Customer dashboard
+│       ├── deposit-page.ts           # Deposit form
+│       └── transactions-page.ts     # Transactions table
 ├── tests/                    # Test specifications
-│   └── customer-creation.spec.ts # Customer creation test suite
+│   ├── bank-manager/        # Bank manager test suites
+│   │   ├── add-customer.spec.ts # Customer creation tests
+│   │   └── open-account.spec.ts # Account opening tests
+│   └── customer/            # Customer test suites
+│       └── make-transactions.spec.ts # Deposit/transaction tests
 ├── playwright.config.ts     # Playwright configuration
 └── package.json             # Project dependencies and scripts
 ```
@@ -39,25 +60,31 @@ npx playwright install
 
 ## Test Suites
 
-### Customer Creation Suite (@customer-creation)
+### Bank Manager Operations
 
+#### Customer Creation (`tests/bank-manager/add-customer.spec.ts`)
 Tests for Bank Manager Operations - Create Customer feature.
 
 **Test Scenarios:**
-1. **Scenario 2.1: Create Customer with Valid Data - Happy Path** (@happy-path)
-   - Validates successful customer creation with all required fields
-   - Verifies success message with customer ID
-   - Confirms customer appears in Customers table
+- **Add new customer**: Creates a customer with valid data, verifies success message, confirms customer appears in table, and verifies customer can login
 
-2. **Scenario 2.2: Verify Customer Appears in Customers Table** (@verify-table)
-   - Creates a customer and verifies it appears in the table
-   - Validates customer data matches input values
-   - Ensures customer ID is present and unique
+#### Account Opening (`tests/bank-manager/open-account.spec.ts`)
+Tests for Bank Manager Operations - Open Account feature.
 
-3. **Scenario 2.3: Create Multiple Unique Customers** (@multiple-customers)
-   - Creates multiple customers with different data
-   - Verifies each customer receives a unique ID
-   - Confirms all customers appear in the table
+**Test Scenarios:**
+- **Open new account for existing customer**: Opens account, verifies success message with account number, and confirms account appears in customers table
+- **Open multiple new accounts for existing customer**: Opens multiple accounts and verifies all account numbers in table
+- **Open multiple new accounts with different currencies**: Opens accounts with different currencies and verifies all in table
+
+### Customer Operations
+
+#### Make Transactions (`tests/customer/make-transactions.spec.ts`)
+Tests for Customer Operations - Make Deposit feature.
+
+**Test Scenarios:**
+- **Make successful deposit to existing account**: Makes deposit, verifies success message, balance update, and transaction record
+- **Validate empty amount field shows tooltip**: Validates HTML5 validation for empty amount field
+- **Make multiple deposits and verify all transactions**: Makes multiple deposits and verifies each transaction in the table
 
 ## Running Tests
 
@@ -118,21 +145,48 @@ Tests are organized using tags for easy execution:
 - `@verify-table` - Table verification scenario
 - `@multiple-customers` - Multiple customers scenario
 
-## Page Object Model
+## Architecture
+
+### Page Object Model (POM)
 
 The framework uses the Page Object Model (POM) pattern for maintainability:
 
-- **BasePage**: Common functionality for all pages
+**Base Classes:**
+- **BasePage**: Common functionality for all pages (navigation, logout, etc.)
+- **ManagerGlobalFields**: Common navigation for bank manager pages
+- **CustomerDashboardPage**: Customer dashboard with common navigation
+
+**Bank Manager Pages:**
 - **LoginPage**: Handles login page interactions
 - **AddCustomerPage**: Handles customer creation form
-- **CustomersTablePage**: Handles customers table interactions
+- **CustomersPage**: Handles customers table interactions
+- **OpenAccountPage**: Handles account opening form
+
+**Customer Pages:**
+- **CustomerDashboardPage**: Customer dashboard with account selection and balance
+- **DepositPage**: Handles deposit form interactions
+- **TransactionsPage**: Handles transactions table interactions
+
+### Business Flows
+
+The framework uses Flow classes to encapsulate complete business workflows, making tests more readable and reusable:
+
+- **CreateCustomerFlow**: Complete customer creation and verification workflow
+- **OpenAccountFlow**: Complete account opening and verification workflow
+- **TransactionFlow**: Complete deposit/transaction workflow with balance and transaction verification
+
+### Fixtures
+
+Playwright fixtures provide reusable setup code:
+- **bank-manager-login**: Automatically logs in as bank manager for tests
+- **customer-login**: Automatically logs in as customer (configurable customer name)
 
 ## Test Data Management
 
-The `TestDataGenerator` utility generates unique test data:
-- Generates unique customer data with timestamps
-- Supports generating multiple customers
-- Provides custom data generation methods
+The `DataGenerator` utility (using Faker.js) generates realistic test data:
+- **generateCustomerData()**: Generates unique customer data (firstName, lastName, postCode)
+- **generateDepositAmount()**: Generates random deposit amounts (default: $10-$1000)
+- **generateDepositAmounts(count)**: Generates multiple random deposit amounts
 
 ## Configuration
 
@@ -143,37 +197,18 @@ The `playwright.config.ts` file contains:
 - Screenshot and video capture on failure
 - Trace collection on retry
 
-## Clean Code Practices
-
-- **Page Object Model**: Separates page interactions from test logic
-- **Descriptive naming**: Clear, descriptive test and method names
-- **Reusable utilities**: Common functionality extracted to utilities
-- **Setup/Teardown**: Proper test setup and cleanup hooks
-- **Test organization**: Tests organized by feature with tags
-
-## Setup and Cleanup
-
-- `beforeAll`: Global setup (resets test data counter)
-- `beforeEach`: Per-test setup (navigates to login, logs in as Bank Manager)
-- `afterAll`: Global cleanup (available for cleanup operations)
-
 ## Reporting
 
-Test reports are generated in HTML format and can be viewed using:
+Test reports are generated in multiple formats:
+
+### HTML Report
 ```bash
 npm run test:report
 ```
 
-Reports include:
-- Test execution results
-- Screenshots on failure
-- Video recordings on failure
-- Trace files for debugging
-
-## Notes
-
-- The application under test is an AngularJS application
-- Tests handle browser alert dialogs for success/error messages
-- Tests wait for Angular to finish rendering before interactions
-- Customer IDs are extracted from success messages and verified in the table
+### Allure Report
+Allure results are generated in `allure-results/` directory. To view:
+```bash
+allure serve allure-results
+```
 
