@@ -134,13 +134,6 @@ test.describe('Bank Customer Operations: Make a deposit', async () => {
              await transactionsPage.sortTrasactionsByDate();
             await transactionFlow.verifyTransaction(depositAmount3, 'Credit');
         });
-
-        // await test.step('Then all deposits should be recorded in the Transactions table as Credit', async () => {
-        //     await transactionFlow.openTransactions();
-        //     for (const amount of depositAmounts) {
-        //         await transactionFlow.verifyTransaction(amount, 'Credit');
-        //     }
-        // });
     });
 
     test.afterEach(async ({ page }) => {
